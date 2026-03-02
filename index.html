@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zargon Production Tracker</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+transition:background 0.3s,color 0.3s;
+}
+
+:root{
+--bg:#f1f5f9;
+--card:#ffffff;
+--text:#111827;
+--border:#e5e7eb;
+}
+
+.dark{
+--bg:#0f172a;
+--card:#1e293b;
+--text:#ffffff;
+--border:#334155;
+}
+
+body{
+background:var(--bg);
+color:var(--text);
+min-height:100vh;
+padding:20px;
+}
+
+/* LOGIN */
+.login{
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+background:linear-gradient(-45deg,#000,#1e293b,#111827,#000);
+background-size:400% 400%;
+animation:gradientBG 10s ease infinite;
+}
+
+@keyframes gradientBG{
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
+}
+
+.login-card{
+width:420px;
+padding:50px;
+border-radius:25px;
+background:rgba(255,255,255,0.08);
+backdrop-filter:blur(20px);
+border:1px solid rgba(255,255,255,0.2);
+text-align:center;
+color:white;
+}
+
+.login-card h1{
+font-size:30px;
+font-weight:800;
+margin-bottom:10px;
+}
+
+.subtitle{
+opacity:0.8;
+margin-bottom:25px;
+}
+
+.login-card input{
+width:100%;
+padding:14px;
+margin:10px 0;
+border-radius:12px;
+border:none;
+background:rgba(255,255,255,0.2);
+color:white;
+}
+
+.login-card button{
+width:100%;
+padding:14px;
+margin-top:15px;
+border:none;
+border-radius:12px;
+background:white;
+color:black;
+font-weight:600;
+cursor:pointer;
+}
+
+.login-footer{
+margin-top:25px;
+font-size:13px;
+opacity:0.8;
+line-height:1.6;
+}
+
+/* MAIN */
+.main{display:none;}
+
+.topbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:var(--card);
+padding:18px 25px;
+border-radius:15px;
+margin-bottom:20px;
+border:1px solid var(--border);
+}
+
+.title{
+font-size:26px;
+font-weight:800;
+}
+
+.top-right{
+display:flex;
+gap:10px;
+align-items:center;
+}
+
+.btn{
+padding:8px 14px;
+border:none;
+border-radius:8px;
+font-weight:600;
+cursor:pointer;
+}
+
+.logout{background:#ef4444;color:white;}
+.passbtn{background:#facc15;color:black;}
+.backupbtn{background:#38bdf8;color:white;}
+.themebtn{background:#6366f1;color:white;}
+
+.dashboard{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+gap:15px;
+margin-bottom:20px;
+}
+
+.card{
+background:var(--card);
+padding:18px;
+border-radius:12px;
+text-align:center;
+border:1px solid var(--border);
+}
+
+.controls{
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+margin-bottom:15px;
+}
+
+.controls input,.controls select{
+padding:10px;
+border-radius:8px;
+border:1px solid var(--border);
+background:var(--card);
+color:var(--text);
+}
+
+.controls button{
+background:#2563eb;
+color:white;
+border:none;
+border-radius:8px;
+padding:10px 16px;
+cursor:pointer;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+background:var(--card);
+border:1px solid var(--border);
+}
+
+th,td{
+padding:10px;
+text-align:center;
+border-bottom:1px solid var(--border);
+font-size:13px;
+}
+
+.done{background:#16a34a;color:white;padding:4px 8px;border-radius:12px;}
+.pending{background:#dc2626;color:white;padding:4px 8px;border-radius:12px;}
+
+tr.highlight{
+background:rgba(255,0,0,0.08);
+}
+
+.action-btn{
+padding:6px 12px;
+border-radius:20px;
+border:none;
+font-size:12px;
+font-weight:600;
+cursor:pointer;
+transition:0.3s;
+margin:2px;
+}
+
+.edit-btn{
+background:linear-gradient(135deg,#3b82f6,#6366f1);
+color:white;
+}
+
+.delete-btn{
+background:linear-gradient(135deg,#ef4444,#dc2626);
+color:white;
+}
+
+.action-btn:hover{
+transform:scale(1.1);
+box-shadow:0 5px 15px rgba(0,0,0,0.2);
+}
+
+@media(max-width:768px){
+.controls{flex-direction:column;}
+table{display:block;overflow-x:auto;}
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+<div class="login" id="loginPage">
+<div class="login-card">
+<h1>Welcome Back</h1>
+<div class="subtitle">Sign in to Zargon Production Tracker</div>
+
+<input type="password" id="pass" placeholder="Enter Password">
+<button onclick="login()">Sign In</button>
+
+<div class="login-footer">
+Zargon Production Tracker Management System<br>
+Md. Hamim Hossain (Visual Artist)<br>
+© 2025 All rights reserved
+</div>
+</div>
+</div>
+
+<!-- MAIN -->
+<div class="main" id="main">
+
+<div class="topbar">
+<div class="title">Zargon Production Tracker</div>
+<div class="top-right">
+<button class="btn themebtn" onclick="toggleTheme()">🌙 / ☀</button>
+<button class="btn backupbtn" onclick="backupData()">Backup</button>
+<button class="btn passbtn" onclick="changePassword()">Change Password</button>
+<button class="btn logout" onclick="logout()">Logout</button>
+</div>
+</div>
+
+<div class="controls">
+<input type="date" id="date">
+<input type="text" id="cycle" placeholder="Cycle">
+<input type="text" id="code" placeholder="Code">
+<input type="text" id="rawClip" placeholder="Raw Video Clip">
+<input type="text" id="editClip" placeholder="Edit Video Clip">
+
+<select id="editStatus">
+<option value="Done">Edit Done</option>
+<option value="Pending">Edit Pending</option>
+</select>
+
+<select id="adsStatus">
+<option value="Posted">Ads Posted</option>
+<option value="Not Posted">Ads Not Posted</option>
+</select>
+
+<input type="text" id="reason" placeholder="Reason">
+<button onclick="addData()">Add</button>
+<button onclick="updateData()">Update</button>
+</div>
+
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Date</th>
+<th>Cycle</th>
+<th>Code</th>
+<th>Raw Clip</th>
+<th>Edit Clip</th>
+<th>Edit Status</th>
+<th>Ads Status</th>
+<th>Reason</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody id="tbody"></tbody>
+</table>
+
+</div>
+
+<script>
+let data=JSON.parse(localStorage.getItem("zargonData"))||[];
+let adminPass=localStorage.getItem("adminPass")||"admin123";
+let editIndex=null;
+
+if(localStorage.getItem("theme")==="dark"){
+document.body.classList.add("dark");
+}
+
+function toggleTheme(){
+document.body.classList.toggle("dark");
+localStorage.setItem("theme",
+document.body.classList.contains("dark")?"dark":"light");
+}
+
+function login(){
+if(pass.value===adminPass){
+loginPage.style.display="none";
+main.style.display="block";
+render();
+}else alert("Wrong Password");
+}
+
+function logout(){
+main.style.display="none";
+loginPage.style.display="flex";
+}
+
+function changePassword(){
+let newPass=prompt("New Password:");
+if(newPass){
+adminPass=newPass;
+localStorage.setItem("adminPass",newPass);
+alert("Updated");
+}
+}
+
+function addData(){
+let item={
+date:date.value,
+cycle:cycle.value,
+code:code.value,
+rawClip:rawClip.value,
+editClip:editClip.value,
+editStatus:editStatus.value,
+adsStatus:adsStatus.value,
+reason:reason.value
+};
+data.push(item);
+localStorage.setItem("zargonData",JSON.stringify(data));
+render();
+}
+
+function editRow(i){
+editIndex=i;
+let d=data[i];
+date.value=d.date;
+cycle.value=d.cycle;
+code.value=d.code;
+rawClip.value=d.rawClip;
+editClip.value=d.editClip;
+editStatus.value=d.editStatus;
+adsStatus.value=d.adsStatus;
+reason.value=d.reason;
+}
+
+function updateData(){
+if(editIndex!==null){
+data[editIndex]={
+date:date.value,
+cycle:cycle.value,
+code:code.value,
+rawClip:rawClip.value,
+editClip:editClip.value,
+editStatus:editStatus.value,
+adsStatus:adsStatus.value,
+reason:reason.value
+};
+localStorage.setItem("zargonData",JSON.stringify(data));
+editIndex=null;
+render();
+}
+}
+
+function deleteData(i){
+data.splice(i,1);
+localStorage.setItem("zargonData",JSON.stringify(data));
+render();
+}
+
+function render(){
+tbody.innerHTML="";
+data.forEach((d,i)=>{
+let highlight=(d.editStatus==="Pending"||d.adsStatus==="Not Posted")?"highlight":"";
+tbody.innerHTML+=`
+<tr class="${highlight}">
+<td>${i+1}</td>
+<td>${d.date}</td>
+<td>${d.cycle||'-'}</td>
+<td>${d.code}</td>
+<td>${d.rawClip||'-'}</td>
+<td>${d.editClip||'-'}</td>
+<td><span class="${d.editStatus==='Done'?'done':'pending'}">${d.editStatus}</span></td>
+<td><span class="${d.adsStatus==='Posted'?'done':'pending'}">${d.adsStatus}</span></td>
+<td>${d.reason||'-'}</td>
+<td>
+<button class="action-btn edit-btn" onclick="editRow(${i})">Edit</button>
+<button class="action-btn delete-btn" onclick="deleteData(${i})">Delete</button>
+</td>
+</tr>`;
+});
+}
+
+function backupData(){
+let csv="date,cycle,code,rawClip,editClip,editStatus,adsStatus,reason\n";
+data.forEach(d=>{
+csv+=`${d.date},${d.cycle},${d.code},${d.rawClip},${d.editClip},${d.editStatus},${d.adsStatus},${d.reason}\n`;
+});
+let blob=new Blob([csv],{type:"text/csv"});
+let link=document.createElement("a");
+link.href=URL.createObjectURL(blob);
+link.download="backup.csv";
+link.click();
+}
+
+render();
+</script>
+
+</body>
+</html>
